@@ -12,6 +12,7 @@ final class MainController extends AbstractController
     {
         return $this->render('index.html.twig', [
             'controller_name' => 'MainController',
+            'year' => date('Y')
         ]);
     }
 

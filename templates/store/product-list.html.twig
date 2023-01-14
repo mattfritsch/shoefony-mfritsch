@@ -1,243 +1,73 @@
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="description" content="Bienvenue sur mon site vitrine développé à l'aide du framework de développement web Symfony">
-        <meta name="author" content="Shoefony">
-        <title>Nos produits | Shoefony - My Symfony Store !</title>
-        <!-- Bootstrap Core CSS -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <!-- Custom CSS -->
-        <link href="css/heroic-features.css" rel="stylesheet">
-    </head>
+{% extends 'layout.html.twig' %}
+{% block title %} Nos produits | {{ parent()}} {% endblock %}
+{% block content %}
+<!-- Page Content -->
+<div class="container">
+	<div class="row">
+		<div class="col-md-3">
+			<p class="lead">Nos marques</p>
+			<div class="list-group">
+				<a href="#" class="list-group-item active">Toutes les marques</a>
+				<a href="#" class="list-group-item">Adidas</a>
+				<a href="#" class="list-group-item">Asics</a>
+				<a href="#" class="list-group-item">Nike</a>
+				<a href="#" class="list-group-item">Puma</a>
+			</div>
+		</div>
 
-    <body>
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">Shoefony</a>
-                </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#">Présentation</a>
-                        </li>
-                        <li>
-                            <a href="#">Nos produits</a>
-                        </li>
-                        <li>
-                            <a href="#">Contact</a>
-                        </li>
-                    </ul>
-
-                    <form class="navbar-form navbar-right">
-                        <div class="form-group">
-                            <input type="text" placeholder="Recherche" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-success">OK</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Page Content -->
-        <div class="container">
-			<div class="row">
-				<div class="col-md-3">
-					<p class="lead">Nos marques</p>
-					<div class="list-group">
-						<a href="#" class="list-group-item active">Toutes les marques</a>
-						<a href="#" class="list-group-item">Adidas</a>
-						<a href="#" class="list-group-item">Asics</a>
-						<a href="#" class="list-group-item">Nike</a>
-						<a href="#" class="list-group-item">Puma</a>
-					</div>
-				</div>
-
-				<div class="col-md-9">
-					<p class="lead">Nos produits " Toutes les marques "</p>
-					<div class="row text-center">
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-1.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-2.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-3.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-4.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-5.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-6.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-7.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-8.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-4 col-sm-6 hero-feature">
-							<div class="thumbnail">
-								<img src="img/products/shoe-9.jpg" alt="Nom du produit">
-								<div class="caption">
-									<h3>Nom du produit</h3>
-									<p>Une description courte du produit sera affichée à cet endroit.</p>
-									<p>
-										<span class="badge">120,00 €</span>
-										<a href="#" class="btn btn-default">Voir la fiche</a>
-									</p>
-								</div>
+		<div class="col-md-9">
+			<p class="lead">Nos produits " Toutes les marques "</p>
+			<div class="row text-center">
+				{% for i in 1..14 %}
+					<div class="col-md-4 col-sm-6 hero-feature">
+						<div class="thumbnail">
+							<img src="img/products/shoe-{{ i }}.jpg" alt="Nom du produit">
+							<div class="caption">
+								<h3>Nom du produit</h3>
+								<p>Une description courte du produit sera affichée à cet endroit.</p>
+								<p>
+									<span class="badge">120,00 €</span>
+									<a href="store/product/{{ i }}/details/product-{{ i }}" class="btn btn-default">Voir la fiche</a>
+								</p>
 							</div>
 						</div>
 					</div>
-
-					<div class="row text-center">
-						<nav>
-							<ul class="pagination pagination-lg">
-								<li>
-									<a href="#" aria-label="Précédent">
-										<span aria-hidden="true">&laquo;</span>
-									</a>
-								</li>
-								<li class="active">
-									<a href="#">1</a>
-								</li>
-								<li>
-									<a href="#">2</a>
-								</li>
-								<li>
-									<a href="#">3</a>
-								</li>
-								<li>
-									<a href="#">4</a>
-								</li>
-								<li>
-									<a href="#">5</a>
-								</li>
-								<li>
-									<a href="#" aria-label="Suivant">
-										<span aria-hidden="true">&raquo;</span>
-									</a>
-								</li>
-							</ul>
-						</nav>
-					</div>
-				</div>
+				{% endfor %}
 			</div>
 
-            <hr/>
+			<div class="row text-center">
+				<nav>
+					<ul class="pagination pagination-lg">
+						<li>
+							<a href="#" aria-label="Précédent">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+						<li class="active">
+							<a href="#">1</a>
+						</li>
+						<li>
+							<a href="#">2</a>
+						</li>
+						<li>
+							<a href="#">3</a>
+						</li>
+						<li>
+							<a href="#">4</a>
+						</li>
+						<li>
+							<a href="#">5</a>
+						</li>
+						<li>
+							<a href="#" aria-label="Suivant">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
 
-            <!-- Footer -->
-            <footer>
-                <p>Copyright &copy; Shoefony 2019</p>
-            </footer>
-        </div>
-
-        <!-- jQuery -->
-        <script src="js/jquery.js"></script>
-        <!-- Bootstrap Core JavaScript -->
-        <script src="js/bootstrap.min.js"></script>
-    </body>
-</html>
+	<hr/>
+{% endblock %}
