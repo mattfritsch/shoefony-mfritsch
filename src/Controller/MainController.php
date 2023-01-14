@@ -10,7 +10,7 @@ final class MainController extends AbstractController
     #[Route('/', name: 'main_homepage', methods: 'GET')]
     public function homepage(): Response
     {
-        return $this->render('index.html.twig', [
+        return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController',
             'year' => date('Y')
         ]);
@@ -19,7 +19,7 @@ final class MainController extends AbstractController
     #[Route('/presentation', name: 'main_presentation', methods: 'GET')]
     public function presentation() : Response
     {
-        return $this->render('presentation.html.twig', [
+        return $this->render('main/presentation.html.twig', [
             'controller_name' => 'MainController',
         ]);
     }
@@ -27,7 +27,7 @@ final class MainController extends AbstractController
     #[Route('/contact', name: 'main_contact', methods: 'GET')]
     public function contact() : Response
     {
-        return $this->render('contact.html.twig', [
+        return $this->render('main/contact.html.twig', [
             'controller_name' => 'MainController'
         ]);
     }

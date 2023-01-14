@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StoreController extends AbstractController
 {
-    #[Route('/store', name: 'app_store')]
+    #[Route('/store', name: 'store_products')]
     public function index(): Response
     {
         return $this->render('store/product-list.html.twig', [

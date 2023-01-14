@@ -18,11 +18,11 @@
         <div class="col-md-9">
             <p class="lead">
                 Fiche descriptive "{{ slug }}"
-                <a href="/store" class="btn btn-default pull-right">Retour aux produits</a>
+                <a href="{{ path('store_products') }}" class="btn btn-default pull-right">Retour aux produits</a>
             </p>
             <div class="row">
                 <div class="thumbnail">
-                    <img class="img-responsive" src="/img/products/shoe-{{ id }}.jpg" alt="">
+                    <img class="img-responsive" src="{{ asset('img/products/shoe-'~ id ~'.jpg') }}" alt="">
                     <div class="caption-full">
                         <h4 class="pull-right"><span class="badge">120,00 €</span></h4>
                         <h3>{{ slug }} id : {{ id }}, adresse IP : {{ ip }}, url {{ url }}</h3>
