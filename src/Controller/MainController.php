@@ -38,18 +38,14 @@ final class MainController extends AbstractController
     #[Route('/contact', name: 'main_contact', methods: ['GET', 'POST'])]
     public function contact(Request $request) : Response
     {
-        //Création de notre entité et du formulaire basé dessus
         $contact = new Contact();
         $form = $this->createForm(ContactType::class, $contact);
 
-        //Demande au formulaire d'interpréter la Request
         $form->handleRequest($request);
 
-        //Dans le cas de la soumission d'un formulaire valide
         if ($form->isSubmitted() && $form->isValid()){
             $this->contactMailer->send($contact);
             $this->addFlash('success', 'Merci, votre message a été pris en compte !');
-            //Actions à effectuer après envoi du formulaire
             return $this->redirectToRoute('main_contact');
         }
 
