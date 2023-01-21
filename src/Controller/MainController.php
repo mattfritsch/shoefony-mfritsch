@@ -3,13 +3,21 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Form\ContactType;
+use App\Mailer\ContactMailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class MainController extends AbstractController
 {
+    public function  __construct(
+        private ContactMailer $contactMailer
+    ){
+    }
+
     #[Route('/', name: 'main_homepage', methods: 'GET')]
     public function homepage(): Response
     {
@@ -39,6 +47,7 @@ final class MainController extends AbstractController
 
         //Dans le cas de la soumission d'un formulaire valide
         if ($form->isSubmitted() && $form->isValid()){
+            $this->contactMailer->send($contact);
             $this->addFlash('success', 'Merci, votre message a été pris en compte !');
             //Actions à effectuer après envoi du formulaire
             return $this->redirectToRoute('main_contact');
