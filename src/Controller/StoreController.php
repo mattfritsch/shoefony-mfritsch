@@ -20,8 +20,9 @@ class StoreController extends AbstractController
     #[Route('/store', name: 'store_products')]
     public function index(): Response
     {
+        $products = $this->productRepository->findAll();
         return $this->render('store/product-list.html.twig', [
-            'products' => $this->productRepository->findAll(),
+            'products' => $products,
         ]);
     }
 

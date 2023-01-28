@@ -28,13 +28,13 @@
 					{% for product in products %}
 						<div class="col-md-4 col-sm-6 hero-feature">
 							<div class="thumbnail">
-								<img src="{{ asset('/img/products/shoe-'~ product.id ~'.jpg') }}" alt="{{ product.name|capitalize }}">
+								<img src="{{ asset('/img/products/shoe-'~ loop.index ~'.jpg') }}" alt="{{ product.name|capitalize }}">
 								<div class="caption">
 									<h3>{{ product.name|capitalize }}</h3>
 									<p>{{ product.description }}</p>
 									<p>
-										<span class="badge">{{ product.price }}</span>
-										<a href="{{ path('store_show_product', {id: product.id , slug: 'product'}) }}" class="btn btn-default">Voir la fiche</a>
+										<span class="badge">{{ product.price|format_currency('EUR') }}</span>
+										<a href="{{ path('store_show_product', {id: product.id , slug: 'product-' ~ product.id}) }}" class="btn btn-default">Voir la fiche</a>
 									</p>
 								</div>
 							</div>
