@@ -4,17 +4,21 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Mailer\ContactMailer;
+use App\Repository\ContactRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class MainController extends AbstractController
 {
+
     public function  __construct(
-        private ContactMailer $contactMailer
+        private ContactMailer $contactMailer,
+        //private EntityManagerInterface $entityManager
+        private ContactRepository $contactRepository
     ){
     }
 
@@ -43,7 +47,13 @@ final class MainController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $this->contactRepository->save($contact, true);
+
+            /*$this->entityManager->persist($contact);
+            $this->entityManager->flush();*/
+
             $this->contactMailer->send($contact);
             $this->addFlash('success', 'Merci, votre message a été pris en compte !');
             return $this->redirectToRoute('main_contact');

@@ -1,28 +1,46 @@
 <?php
 namespace App\Entity;
 
+use App\Repository\ContactRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraint as Assert;
 
+
+#[ORM\Entity(repositoryClass: ContactRepository::class)]
+#[ORM\Table(name: 'app_contact')]
 class Contact
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
+    #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
+    #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
+    #[ORM\Column(length: 255)]
     private ?string $email = null;
 
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide')]
     #[Assert\Length(min: 25, minMessage: 'Votre message doit contenir au minimum {{ limit }} caractères.')]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt;
 
 
     public function __construct()
     {
-
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     /**
