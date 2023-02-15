@@ -19,13 +19,7 @@
             </div>
         </div>
 
-        {% for flash_type, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ flash_type }}" role="alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
+        {{ block('flash', 'blocks/flash.html.twig') }}
 
         {{ form_start(form) }}
             <div class="form-group">
@@ -46,7 +40,7 @@
             <div class="form-group">
                 {{ form_errors(form.message) }}
                 {{ form_label(form.message) }}
-                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': form.email.vars.label, 'rows': 6} }) }}
+                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': form.message.vars.label, 'rows': 6} }) }}
             </div>
             <button type="submit" class="btn btn-info">Envoyer mon message</button>
         {{ form_end(form) }}

@@ -4,6 +4,7 @@ namespace App\Repository\Store;
 
 use App\Entity\Store\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,77 @@ class ProductRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findAllWithImages() : array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->addSelect('i')
+            ->innerJoin('p.image', 'i')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findBrandWithImages(array $brand) : array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->addSelect('i')
+            ->innerJoin('p.image', 'i')
+            ->where('p.brand = :brand')
+            ->setParameter('brand', $brand)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Product
+     * @throws NonUniqueResultException
+     */
+    public function findOneByIdWithImage(int $id) : Product
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->addSelect('i')
+            ->innerJoin('p.image', 'i')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function findLastProducts(): array
+    {
+        $results = $this->getEntityManager()->createQueryBuilder();
+        return $results
+            ->select('p')
+            ->from(Product::class, 'p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(4)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getMostPopularProducts() : array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->innerJoin('p.comments', 'c')
+            ->groupBy('p')
+            ->orderBy('COUNT(c.id)', 'DESC')
+            ->setMaxResults(4)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

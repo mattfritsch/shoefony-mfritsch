@@ -49,17 +49,18 @@ class Product
     #[ORM\JoinColumn(name: 'sto_product_color')]
     private Collection $colors;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $comments;
+
 
     public function __construct(
         Image $image,
-        Brand $brand,
         string $name,
         string $description,
         float $price
     )
     {
         $this->image = $image;
-        $this->brand = $brand;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
@@ -69,6 +70,7 @@ class Product
 
         $this->createdAt = new \DateTimeImmutable();
         $this->colors = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,4 +169,30 @@ class Product
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment) && $comment->getProduct() === $this) {
+            $this->comments->add($comment);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        $this->comments->removeElement($comment);
+
+        return $this;
+    }
+
+
 }

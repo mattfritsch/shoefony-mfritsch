@@ -2,9 +2,12 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
+use App\Entity\Store\Product;
 use App\Form\ContactType;
 use App\Mailer\ContactMailer;
+use App\Repository\CommentRepository;
 use App\Repository\ContactRepository;
+use App\Repository\Store\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension;
@@ -18,15 +21,20 @@ final class MainController extends AbstractController
     public function  __construct(
         private ContactMailer $contactMailer,
         //private EntityManagerInterface $entityManager
-        private ContactRepository $contactRepository
+        private ContactRepository $contactRepository,
+        private ProductRepository $productRepository
     ){
     }
 
     #[Route('/', name: 'main_homepage', methods: 'GET')]
     public function homepage(): Response
     {
+        $lastProducts = $this->productRepository->findLastProducts();
+        $popularProducts = $this->productRepository->getMostPopularProducts();
+
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
+            'lastProducts' => $lastProducts,
+            'popularProducts' => $popularProducts,
             'year' => date('Y')
         ]);
     }

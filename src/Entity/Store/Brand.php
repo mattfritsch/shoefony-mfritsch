@@ -23,10 +23,8 @@ class Brand
     private Collection $products;
 
     public function __construct(
-        string $name
     )
     {
-        $this->name = $name;
         $this->products = new ArrayCollection();
     }
 
@@ -67,5 +65,17 @@ class Brand
     {
         return $this->name;
     }
+
+    /**
+     * @param string|null $name
+     * @return Brand
+     */
+    public function setName(?string $name): Brand
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+
 
 }

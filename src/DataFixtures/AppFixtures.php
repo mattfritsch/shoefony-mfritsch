@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Store\Brand;
 use App\Entity\Store\Color;
+use App\Entity\Store\Comment;
 use App\Entity\Store\Image;
 use App\Entity\Store\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -17,45 +18,124 @@ class AppFixtures extends Fixture
     {
         $this->manager = $manager;
 
+        $this->loadBrands();
+
+        $this->loadColors();
+
         $this->loadProducts();
 
-        $this->manager->flush();
+        $manager->flush();
     }
 
+    private function loadBrands(): void
+    {
+        $brands = [
+            ['Nike'],
+            ['Adidas'],
+            ['Puma'],
+            ['Reebook'],
+        ];
+
+        foreach ($brands as $key => [$name]) {
+            $brand = new Brand();
+            $brand->setName($name);
+            $this->manager->persist($brand);
+            $this->addReference(Brand::class . $key, $brand);
+        }
+    }
+
+    private function loadColors(): void
+    {
+        $colors = [
+            ['Rouge'],
+            ['Bleu'],
+            ['Vert'],
+            ['Blanc'],
+        ];
+
+        foreach ($colors as $key => [$name]) {
+            $color = new Color();
+            $color->setName($name);
+            $this->manager->persist($color);
+            $this->addReference(Color::class . $key, $color);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
     private function loadProducts(): void
     {
-        $brand = (new Brand(
-            'Adidas'
-        ));
 
-        $color = (new Color(
-            'Rouge'
-        ));
-
-        $this->manager->persist($brand);
-        $this->manager->persist($color);
-
-        for($i = 1; $i < 15; $i++)
-        {
-            $image = (new Image(
-               '/img/products/shoe-'.$i.'.jpg',
-                'image product '.$i
-            ));
-
-            $product = (new Product(
-                $image,
-                $brand,
+        for($i = 1; $i < 15; $i++) {
+            $product = new Product(
+                new Image('img/products/shoe-'.$i.'.jpg', 'Image du produit '.$i),
                 'product '.$i,
                 'Produit de description '.$i,
-                (mt_rand(10,100))
-            ));
+                mt_rand(10, 100),
+            );
 
-            $product->setLongDescription('Voici la description longue de product '. $i);
+            $product->setSlug('product-'.$i);
+            $product->setLongDescription('Voici la description longue du produit '.$i);
 
-            $brand->addProduct($product);
-            $product->addColor($color);
+            /** @var Brand $brand */
+            $brand = $this->getReference(Brand::class . random_int(0, 3));
+            $product->setBrand($brand);
+
+            [$min, $max] = $this->getBoundaries(4);
+
+            for($j = $min; $j < $max; $j++) {
+                /** @var Color $color */
+                $color = $this->getReference(Color::class . $j);
+                $product->addColor($color);
+            }
+
+            for($j = 0; $j < random_int(0,20); $j++) {
+                $comment = $this->createRandomComment($product);
+                $product->addComment($comment);
+            }
 
             $this->manager->persist($product);
+
+            sleep(1);
         }
+    }
+
+    private function createRandomComment(Product $product) : Comment
+    {
+        $pseudos = [
+            'moulino',
+            'mezza',
+            'atong',
+            'neirda'
+        ];
+
+        $messages = [
+            'Super produit je recommande',
+            'Attention, ça taille grand !',
+            'M\'ouais, bof',
+            'Pas ouf :/',
+            'Parfait pour mes séances de running intensives'
+        ];
+
+        $comment =  new Comment();
+        $comment->setProduct($product);
+        $comment->setPseudo(array_rand($pseudos));
+        $comment->setMessage(array_rand($messages));
+
+        return $comment;
+    }
+
+    /**
+     *
+     * @return array{0:int, 1:int}
+     * @throws \Exception
+     */
+    private function getBoundaries(int $max): array
+    {
+        $min = random_int(0, $max);
+        $max = random_int($min, $max);
+
+        return [$min, $max];
     }
 }

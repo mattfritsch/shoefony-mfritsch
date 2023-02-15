@@ -19,10 +19,8 @@ class Color
 
 
     public function __construct(
-        string $name
     )
     {
-        $this->name = $name;
     }
 
     public function getId(): ?int
