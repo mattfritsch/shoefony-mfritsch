@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Store;
 
 use App\Entity\Store\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,7 +40,7 @@ class CommentRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Comment[] Returns an array of Comment objects
+//     * @return CommentType[] Returns an array of CommentType objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CommentRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Comment
+//    public function findOneBySomeField($value): ?CommentType
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

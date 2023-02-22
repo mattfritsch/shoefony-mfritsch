@@ -6,7 +6,6 @@ use App\Repository\Store\ColorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ColorRepository::class)]
-#[ORM\Table(name: 'sto_color')]
 class Color
 {
     #[ORM\Id]
@@ -15,13 +14,7 @@ class Color
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name;
-
-
-    public function __construct(
-    )
-    {
-    }
+    private ?string $name = null;
 
     public function getId(): ?int
     {

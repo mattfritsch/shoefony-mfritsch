@@ -1,47 +1,68 @@
 {% extends 'layout.html.twig' %}
-{% block title %} Produit 1 | {{ parent() }}{% endblock %}
+
 {% block content %}
-<!-- Page Content -->
-<div class="container">
     <div class="row">
-       {{ block('brands', 'blocks/brands.html.twig') }}
+        {{ block("brands", "blocks/brands.html.twig") }}
+
         <div class="col-md-9">
-            {{ block('flash', 'blocks/flash.html.twig') }}
+            {% for flash_type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ flash_type }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
             <p class="lead">
-                Fiche descriptive : "{{ product.name|capitalize }}"
-                <a href="{{ path('store_products') }}" class="btn btn-default pull-right">Retour aux produits</a>
+                {{ product.name }}
+                <a href="#" class="btn btn-default pull-right">Retour aux produits</a>
             </p>
             <div class="row">
                 <div class="thumbnail">
-                    {{ block('productDetails', 'blocks/product.html.twig') }}
+                    <img class="img-responsive" src="img/products/shoe-1.jpg" alt="">
+                    <div class="caption-full">
+                        <h4 class="pull-right"><span class="badge">120,00 €</span></h4>
+                        <img src="{{ asset(product.image.url) }}">
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        <p>
+                            {{ product.longDescription }}
+                        </p>
+                        {% for color in product.colors %}
+                            <span class="label label-default">{{ color.name }}</span>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div class="well">
-                    <p class="pull-right label label-success">Actuellement {{ comments|length}} avis</p>
-                    {% for comment in comments %}
+                    <p class="pull-right label label-success">Actuellement {{ product.comments | length }} avis</p>
+                    {% for comment in product.comments %}
                         <div class="row">
                             <div class="col-md-12">
-                                    <span class="label label-info">{{ comment.pseudo }}</span>
-                                    <span class="label label-default pull-right">{{ comment.createdAt.format('d/m/Y') }}</span>
-                                    <p>{{comment.message}}</p>
+                                <span class="label label-info">{{ comment.pseudo }}</span>
+                                <span class="label label-default pull-right">{{ comment.createdAt.format('d/m/Y') }}</span>
+                                <p>{{ comment.message }}</p>
                             </div>
                         </div>
                         <hr/>
                     {% endfor %}
 
+
+
                     <div>
                         {{ form_start(form) }}
                             <div class="form-group">
-                                {{ form_errors(form.pseudo) }}
                                 {{ form_label(form.pseudo) }}
-                                {{ form_widget(form.pseudo, {'attr': {'class': 'form-control', 'placeholder': form.pseudo.vars.label} }) }}
+                                {{ form_errors(form.pseudo) }}
+                                {{ form_widget(form.pseudo, {'attr': {'class': 'form-control', 'placeholder': form.pseudo.vars.label }}) }}
                             </div>
+
                             <div class="form-group">
-                                {{ form_errors(form.message) }}
                                 {{ form_label(form.message) }}
-                                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': form.message.vars.label} }) }}
+                                {{ form_errors(form.message) }}
+                                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': form.message.vars.label }}) }}
                             </div>
-                        <button type="submit" class="btn btn-info">Envoyer mon avis</button>
+
+                            <button type="submit" class="btn btn-info">Envoyer mon message</button>
                         {{ form_end(form) }}
                     </div>
                 </div>
@@ -50,4 +71,5 @@
     </div>
 
     <hr/>
+
 {% endblock %}

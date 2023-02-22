@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BrandRepository::class)]
-#[ORM\Table(name: 'sto_brand')]
 class Brand
 {
     #[ORM\Id]
@@ -17,15 +16,14 @@ class Brand
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Product::class)]
     private Collection $products;
 
-    public function __construct(
-    )
+    public function __construct()
     {
-        $this->products = new ArrayCollection();
+       $this->products = new ArrayCollection();
     }
 
     /**
@@ -38,23 +36,35 @@ class Brand
 
     public function addProduct(Product $product): self
     {
-        if(!$this->products->contains($product)){
+        if (!$this->products->contains($product)) {
             $this->products[] = $product;
             $product->setBrand($this);
         }
+
         return $this;
     }
 
     public function removeProduct(Product $product): self
     {
-        if(!$this->products->contains($product)){
-            $this->products->removeElement($product);
-            if($product->getBrand() === $this){
+        if ($this->products->contains($product)) {
+            ($this->products->removeElement($product));
+            // set the owning side to null (unless already changed)
+            if ($product->getBrand() === $this) {
                 $product->setBrand(null);
             }
         }
+
         return $this;
     }
+
+    /**
+     * @param Collection<int, Product> $products
+     */
+    public function setProducts(Collection $products): void
+    {
+        $this->products = $products;
+    }
+
 
     public function getId(): ?int
     {
@@ -66,16 +76,10 @@ class Brand
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     * @return Brand
-     */
-    public function setName(?string $name): Brand
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
-
-
-
 }

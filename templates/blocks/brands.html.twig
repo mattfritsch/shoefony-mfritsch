@@ -2,36 +2,28 @@
     <div class="col-md-3">
         <p class="lead">Nos marques</p>
         <div class="list-group">
-            {#si le produit n'est pas défini#}
-            {% if products is defined %}
-                {#Si l'id de la marque est dans l'url#}
-                {% if brandActive is not defined %}
-                    <a href="{{ path('store_products') }}" class="list-group-item active">Toutes les marques</a>
+            {% if product is defined %}
+                {# product detail #}
+                <a href="#" class="list-group-item">Toutes les marques</a>
+                {% for brand in brands %}
+                    <a href="#" class="list-group-item {{ product.brand is same as(brand) ? "active" }}">{{ brand.name }}</a>
+                {% endfor %}
+            {% else %}
+                {% if activeBrand is defined %}
+                    {# products brand #}
+                    <a href="{{ path('app_store') }}" class="list-group-item">Toutes les marques</a>
                     {% for brand in brands %}
-                        <a href="{{ path('store_products_brand', {brandId: brand.id}) }}" class="list-group-item">{{ brand.name }}</a>
+                        <a href="{{ path('app_store_brand', {id: brand.id}) }}" class="list-group-item {{ brand is same as(activeBrand) ? "active" }}">{{ brand.name }}</a>
                     {% endfor %}
                 {% else %}
-                    <a href="{{ path('store_products') }}" class="list-group-item">Toutes les marques</a>
+                    {# all products #}
+                    <a href="{{ path('app_store') }}" class="list-group-item active">Toutes les marques</a>
                     {% for brand in brands %}
-                        {#si l'id dans l'url est le même id que la marque #}
-                        {% if brandActive is same as brand.id %}
-                            <a href="{{ path('store_products_brand', {brandId: brand.id}) }}" class="list-group-item active">{{ brand.name }}</a>
-                        {% else %}
-                            <a href="{{ path('store_products_brand', {brandId: brand.id}) }}" class="list-group-item">{{ brand.name }}</a>
-                        {% endif %}
+                        <a href="{{ path('app_store_brand', {id: brand.id}) }}" class="list-group-item">{{ brand.name }}</a>
                     {% endfor %}
                 {% endif %}
-            {% else %}
-                <a href="{{ path('store_products') }}" class="list-group-item">Toutes les marques</a>
-                {% for brand in brands %}
-                    {#si le nom de la marque du produit est le même nom que la marque#}
-                    {% if product.brand.name is same as brand.name %}
-                        <a href="{{ path('store_products_brand', {brandId: brand.id}) }}" class="list-group-item active">{{ brand.name }}</a>
-                    {% else %}
-                        <a href="{{ path('store_products_brand', {brandId: brand.id}) }}" class="list-group-item">{{ brand.name }}</a>
-                    {% endif %}
-                {% endfor %}
             {% endif %}
+
         </div>
     </div>
 {% endblock %}

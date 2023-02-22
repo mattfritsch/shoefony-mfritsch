@@ -1,46 +1,81 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraint as Assert;
-
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 #[ORM\Table(name: 'app_contact')]
-class Contact
+final class Contact
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $firstName = null;
 
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $lastName = null;
 
     #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
     #[Assert\Email(message: 'L\'email {{ value }} n\'est pas valide.')]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $email = null;
 
-    #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide')]
-    #[Assert\Length(min: 25, minMessage: 'Votre message doit contenir au minimum {{ limit }} caractères.')]
-    #[ORM\Column(type: Types::TEXT)]
+
+    #[Assert\NotBlank(message: 'Ce champ ne peut pas être vide.')]
+    #[Assert\Length(
+        min: 25,
+        minMessage: 'Votre message doit faire au moins {{ limit }} caractères.'
+    )]
+    #[ORM\Column]
     private ?string $message = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt;
-
+    private ?\DateTimeImmutable $created_at;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->created_at = new \DateTimeImmutable();
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $created_at
+     */
+    public function setCreatedAt(?\DateTimeImmutable $created_at): void
+    {
+        $this->created_at = $created_at;
     }
 
     /**
@@ -53,7 +88,6 @@ class Contact
 
     /**
      * @param string $firstName
-     * @return Contact
      */
     public function setFirstName(string $firstName): Contact
     {
@@ -71,7 +105,6 @@ class Contact
 
     /**
      * @param string $lastName
-     * @return Contact
      */
     public function setLastName(string $lastName): Contact
     {
@@ -89,7 +122,6 @@ class Contact
 
     /**
      * @param string $email
-     * @return Contact
      */
     public function setEmail(string $email): Contact
     {
@@ -107,15 +139,10 @@ class Contact
 
     /**
      * @param string $message
-     * @return Contact
      */
     public function setMessage(string $message): Contact
     {
         $this->message = $message;
         return $this;
     }
-
-
-
-
 }

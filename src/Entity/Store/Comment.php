@@ -2,8 +2,7 @@
 
 namespace App\Entity\Store;
 
-use App\Repository\CommentRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\Store\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -16,22 +15,20 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $pseudo;
+    private ?string $pseudo = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $message;
+    #[ORM\Column(length: 255)]
+    private ?string $message = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt;
+    private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(name: 'sto_product_id', nullable: false)]
-    private ?Product $product;
+    private ?Product $product = null;
 
-    public function __construct(
-    )
+    public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -39,19 +36,40 @@ class Comment
         return $this->id;
     }
 
-    public function getPseudo(): string
+    public function getPseudo(): ?string
     {
         return $this->pseudo;
     }
 
-    public function getMessage(): string
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function setMessage(string $message): self
     {
-        return $this->createdAt;
+        $this->message = $message;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
     }
 
     public function getProduct(): ?Product
@@ -65,36 +83,4 @@ class Comment
 
         return $this;
     }
-
-    /**
-     * @param string|null $pseudo
-     * @return Comment
-     */
-    public function setPseudo(?string $pseudo): Comment
-    {
-        $this->pseudo = $pseudo;
-        return $this;
-    }
-
-    /**
-     * @param string|null $message
-     * @return Comment
-     */
-    public function setMessage(?string $message): Comment
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * @param \DateTimeImmutable|null $createdAt
-     * @return Comment
-     */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): Comment
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-
 }

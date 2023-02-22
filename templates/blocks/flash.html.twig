@@ -1,9 +1,0 @@
-{% block flash %}
-    {% for flash_type, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ flash_type }}" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-{% endblock %}

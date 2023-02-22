@@ -2,6 +2,7 @@
 
 namespace App\Entity\Store;
 
+use App\Entity\Store\Comment;
 use App\Repository\Store\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ORM\Table(name: 'sto_product')]
 class Product
 {
     #[ORM\Id]
@@ -19,39 +19,37 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name;
+    private ?string $name = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[ORM\Column]
+    private ?float $price = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at;
+
+    #[ORM\OneToOne(targetEntity: Image::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'sto_image_id', nullable: false)]
+    private ?Image $image = null;
+
+    #[ORM\Column(length: 1500)]
+    private ?string $long_description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $slug;
+    private ?string $slug = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $longDescription;
-
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $price;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'sto_image_id', nullable: false)]
-    private ?Image $image;
-
-    #[ORM\ManyToOne(inversedBy: 'products')]
-    #[ORM\JoinColumn(name: 'sto_brand_id', nullable: false)]
-    private ?Brand $brand;
+    #[ORM\ManyToOne(targetEntity: Brand::class, inversedBy: 'products')]
+    #[ORM\JoinColumn(name: 'sto_brand_id')]
+    private ?Brand $brand = null;
 
     #[ORM\ManyToMany(targetEntity: Color::class)]
-    #[ORM\JoinColumn(name: 'sto_product_color')]
+    #[ORM\JoinTable(name: 'sto_product_color')]
     private Collection $colors;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class, cascade: ['persist', 'remove'])]
     private Collection $comments;
-
 
     public function __construct(
         Image $image,
@@ -68,110 +66,13 @@ class Product
         $slugger = new AsciiSlugger();
         $this->slug = $slugger->slug($name)->toString();
 
-        $this->createdAt = new \DateTimeImmutable();
+        $this->created_at = new \DateTimeImmutable();
         $this->colors = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function getPrice(): ?string
-    {
-        return $this->price;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(?string $slug): self
-    {
-        $this->slug = $slug;
-        return $this;
-    }
-
-    public function getLongDescription(): ?string
-    {
-        return $this->longDescription;
-    }
-
-    public function setLongDescription(?string $longDescription): self
-    {
-        $this->longDescription = $longDescription;
-        return $this;
-    }
-
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
-
-    public function setImage(?Image $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getBrand(): ?Brand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): self
-    {
-        $this->brand = $brand;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Color>
-     */
-    public function getColors(): Collection
-    {
-        return $this->colors;
-    }
-
-    public function addColor(Color $color): self
-    {
-        if (!$this->colors->contains($color)) {
-            $this->colors->add($color);
-        }
-
-        return $this;
-    }
-
-    public function removeColor(Color $color): self
-    {
-       if($this->colors->contains($color)){
-           $this->colors->removeElement($color);
-       }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comment>
+     * @return Collection
      */
     public function getComments(): Collection
     {
@@ -195,4 +96,142 @@ class Product
     }
 
 
+
+
+    /**
+     * @return Collection
+     */
+    public function getColors(): Collection
+    {
+        return $this->colors;
+    }
+
+    public function addColor(Color $color): self
+    {
+        if (!$this->colors->contains($color)) {
+            $this->colors[] = $color;
+        }
+
+        return $this;
+    }
+
+    public function removeColor(Color $color): self
+    {
+        if ($this->colors->contains($color)) {
+            $this->colors->removeElement($color);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Brand|null
+     */
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand|null $brand
+     */
+    public function setBrand(?Brand $brand): void
+    {
+        $this->brand = $brand;
+    }
+
+    /**
+     * @return Image|null
+     */
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param Image|null $image
+     */
+    public function setImage(?Image $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getLongDescription(): ?string
+    {
+        return $this->long_description;
+    }
+
+    public function setLongDescription(string $long_description): self
+    {
+        $this->long_description = $long_description;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
 }

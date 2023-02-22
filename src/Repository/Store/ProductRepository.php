@@ -2,9 +2,9 @@
 
 namespace App\Repository\Store;
 
+use App\Entity\Store\Brand;
 use App\Entity\Store\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +12,6 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductRepository extends ServiceEntityRepository
@@ -41,27 +40,56 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Product[]
+     * @return array<Product>
      */
-    public function findAllWithImages() : array
+    public function find4LastProducts(): array
     {
-        return $this
-            ->createQueryBuilder('p')
+        return $this->createQueryBuilder('p')
             ->addSelect('i')
-            ->innerJoin('p.image', 'i')
+            ->leftJoin('p.image', 'i')
+            ->orderBy('p.created_at', 'DESC')
+            ->setMaxResults(4)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return array<Product>
+     */
+    public function find4PopularProducts(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i')
+            ->innerJoin('p.comments', 'c')
+            ->groupBy('p.id')
+            ->orderBy('COUNT(c.id)', 'DESC')
+            ->setMaxResults(4)
             ->getQuery()
             ->getResult();
     }
 
     /**
-     * @return Product[]
+     * @return array<Product>
      */
-    public function findBrandWithImages(array $brand) : array
+    public function findAll(): array
     {
-        return $this
-            ->createQueryBuilder('p')
+        return $this->createQueryBuilder('p')
             ->addSelect('i')
-            ->innerJoin('p.image', 'i')
+            ->leftJoin('p.image', 'i')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return array<Product>
+     */
+    public function findByBrand(Brand $brand): array
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('i')
+            ->leftJoin('p.image', 'i')
             ->where('p.brand = :brand')
             ->setParameter('brand', $brand)
             ->getQuery()
@@ -69,46 +97,22 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Product
-     * @throws NonUniqueResultException
+     * @return ?Product
      */
-    public function findOneByIdWithImage(int $id) : Product
+    public function findOneById(string $id): ?Product
     {
-        return $this
-            ->createQueryBuilder('p')
+        return $this->createQueryBuilder('p')
             ->addSelect('i')
-            ->innerJoin('p.image', 'i')
+            ->leftJoin('p.image', 'i')
+            ->addSelect('c')
+            ->leftJoin('p.colors', 'c')
+            ->addSelect('com')
+            ->leftJoin('p.comments', 'com')
+            ->orderBy('com.created_at', 'DESC')
             ->where('p.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
-    }
-
-    /**
-     * @return Product[]
-     */
-    public function findLastProducts(): array
-    {
-        $results = $this->getEntityManager()->createQueryBuilder();
-        return $results
-            ->select('p')
-            ->from(Product::class, 'p')
-            ->orderBy('p.createdAt', 'DESC')
-            ->setMaxResults(4)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getMostPopularProducts() : array
-    {
-        return $this
-            ->createQueryBuilder('p')
-            ->innerJoin('p.comments', 'c')
-            ->groupBy('p')
-            ->orderBy('COUNT(c.id)', 'DESC')
-            ->setMaxResults(4)
-            ->getQuery()
-            ->getResult();
     }
 
 //    /**

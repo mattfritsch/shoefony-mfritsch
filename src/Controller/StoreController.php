@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Store\Comment;
-use App\Entity\Store\Product;
 use App\Form\CommentType;
-use App\Form\ContactType;
-use App\Repository\CommentRepository;
+use App\Manager\Store\ProductManager;
 use App\Repository\Store\BrandRepository;
-use App\Repository\Store\ColorRepository;
+use App\Repository\Store\CommentRepository;
 use App\Repository\Store\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,93 +16,85 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StoreController extends AbstractController
 {
-    public function __construct(
+
+    public function  __construct(
         private ProductRepository $productRepository,
         private BrandRepository $brandRepository,
-        private ColorRepository $colorRepository,
-        private CommentRepository $commentRepository
-    )
-    {
+        private CommentRepository $commentRepository,
+        private ProductManager $productManager,
+    ){
     }
 
-    #[Route('/store', name: 'store_products')]
+    #[Route('/store', name: 'app_store')]
     public function index(): Response
     {
-        $products = $this->productRepository->findAllWithImages();
-        $brands = $this->brandRepository->findAll();
-        return $this->render('store/product-list.html.twig', [
-            'products' => $products,
-            'brands' => $brands
-        ]);
-    }
-
-    #[Route('/store/{brandId}', name: 'store_products_brand', requirements: ['brandId' => '\d+'])]
-    public function indexBrand(int $brandId): Response
-    {
-        $brand = $this->brandRepository->findBy(['id' => $brandId]);
-        $products = $this->productRepository->findBrandWithImages($brand);
+        $products = $this->productRepository->findAll();
 
         $brands = $this->brandRepository->findAll();
 
         return $this->render('store/product-list.html.twig', [
             'products' => $products,
             'brands' => $brands,
-            'brandActive' => $brandId
+            'brand' => null,
         ]);
     }
 
-    #[Route('/store/product/{id}/details/{slug}', name: 'store_show_product', requirements: ['id' => '\d+'])]
-    public function showProduct(int $id, string $slug, Request $request) : Response
+    #[Route('/store/{id}', name: 'app_store_brand', requirements: ['id' => '\d+'])]
+    public function indexBrand(int $id): Response
     {
-        $product = $this->productRepository->findOneByIdWithImage($id);
+        $brand = $this->brandRepository->findOneBy(['id' => $id]);
+        $products = $this->productRepository->findByBrand($brand);
 
-        $brand = $this->brandRepository->findAll();
-        $comments = $this->commentRepository->findBy(['product' => $id], ['createdAt' => 'DESC']);
 
-        if(!$product){
-            throw new NotFoundHttpException('Le produit d\'id : ' .$id.  ' n\'existe pas');
-        }
+        $brands = $this->brandRepository->findAll();
 
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
+        return $this->render('store/product-list.html.twig', [
+            'products' => $products,
+            'brands' => $brands,
+            'activeBrand' => $brand,
+        ]);
+    }
 
-        $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $comment->setProduct($product);
-            $this->commentRepository->save($comment, true);
+    #[Route('/store/product/{id}/details/{slug}', name: 'store_show_product', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function showProduct(int $id, string $slug, Request $request): Response
+    {
+        $product = $this->productRepository->findOneById($id);
+        $brands = $this->brandRepository->findAll();
 
-            $this->addFlash('success', 'Merci, votre avis a été posté !');
-
-            return $this->redirectToRoute('store_show_product', [
-                'id' =>$product->getId(),
-                'slug' => $product->getSlug()
-            ], Response::HTTP_MOVED_PERMANENTLY);
+        if($product === null){
+            throw new NotFoundHttpException();
         }
 
         if($product->getSlug() !== $slug){
             return $this->redirectToRoute('store_show_product', [
-                'id' =>$product->getId(),
-                'slug' => $product->getSlug()
+                'id' => $product->getId(),
+                'slug' => $product->getSlug(),
             ], Response::HTTP_MOVED_PERMANENTLY);
         }
 
-        $colors = $this->colorRepository->findAll();
+        //form
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
 
-        foreach ($colors as $color) {
-            $product->addColor($color);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->productManager->addComment($comment, $product);
+
+            return $this->redirectToRoute('store_show_product', [
+                'id' => $product->getId(),
+                'slug' => $product->getSlug(),
+            ]);
         }
 
 
         return $this->render('store/product-detail.html.twig', [
             'form' => $form->createView(),
             'product' => $product,
-            'brands' => $brand,
-            'url' => $this->generateUrl('store_show_product', [
-                'id' => $id,
-                'slug' => $slug
-            ]),
-            'comments' => $comments
+            'id' => $id,
+            'slug' => $slug,
+            'brands' => $brands,
         ]);
     }
 }
