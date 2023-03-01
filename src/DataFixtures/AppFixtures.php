@@ -118,7 +118,12 @@ class AppFixtures extends Fixture
             'Parfait pour mes séances de running intensives'
         ];
 
-        return new Comment();
+        $comment =  new Comment();
+        $comment->setProduct($product);
+        $comment->setPseudo(array_rand($pseudos));
+        $comment->setMessage(array_rand($messages));
+
+        return $comment;
     }
 
     /**
